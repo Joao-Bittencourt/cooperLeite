@@ -2,9 +2,9 @@
 
 namespace App\Filament\App\Resources;
 
-use App\Filament\App\Resources\ClienteResource\Pages;
-use App\Filament\App\Resources\ClienteResource\RelationManagers;
-use App\Models\Cliente;
+use App\Filament\App\Resources\UserResource\Pages;
+use App\Filament\App\Resources\UserResource\RelationManagers;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,30 +13,31 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ClienteResource extends Resource
+class UserResource extends Resource
 {
-    protected static ?string $model = Cliente::class;
+    protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static ?string $label = 'Usuario';
+
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+
+    protected static ?string $navigationGroup = 'Configuração';
 
     public static function form(Form $form): Form
     {
-        $cliente = new Cliente();
-
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nome')
+                Forms\Components\TextInput::make('name')
+                    ->label('Nome')
                     ->required(),
-                Forms\Components\Select::make('tipo_pessoa')
-                    ->options($cliente->tipoPessoaOptions)
+                Forms\Components\TextInput::make('Email')
+                    ->label('Email')
+                    ->email()
                     ->required(),
-                Forms\Components\Select::make('papel')
-                    ->options($cliente->papelOptions)
+                // Forms\Components\DateTimePicker::make('email_verified_at'),
+                Forms\Components\TextInput::make('password')
+                    ->password()
                     ->required(),
-                Forms\Components\Select::make('status')
-                    ->options([1 => 'Ativo', 0 => 'Cancelado'])
-                    ->required()
-                    ->default(1),
             ]);
     }
 
@@ -44,15 +45,15 @@ class ClienteResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nome')
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Nome')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('tipo_pessoa')
+                Tables\Columns\TextColumn::make('email')
+                    ->label('Email')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('papel')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('status')
-                    ->numeric()
-                    ->sortable(),
+                // Tables\Columns\TextColumn::make('email_verified_at')
+                //     ->dateTime('d/m/Y')
+                //     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Dt Cadastro')
                     ->dateTime('d/m/Y h:i')
@@ -68,7 +69,6 @@ class ClienteResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -88,9 +88,9 @@ class ClienteResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListClientes::route('/'),
-            'create' => Pages\CreateCliente::route('/create'),
-            'edit' => Pages\EditCliente::route('/{record}/edit'),
+            'index' => Pages\ListUsers::route('/'),
+            'create' => Pages\CreateUser::route('/create'),
+            'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
 }
