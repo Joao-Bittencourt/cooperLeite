@@ -14,8 +14,7 @@ class Cliente extends Model
 
     public array $tipoPessoaOptions = [
         'F' => 'Pessoa Fisica',
-        'F' => 'Fornecedor',
-        'I' => 'Funcionario' // Interno
+        'J' => 'Pessoa juridica'
     ];
 
     public array $papelOptions = [
