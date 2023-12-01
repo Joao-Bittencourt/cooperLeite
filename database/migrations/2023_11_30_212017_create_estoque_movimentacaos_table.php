@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\User;
+use App\Models\Produto;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,12 +12,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('clientes', function (Blueprint $table) {
+        Schema::create('estoque_movimentacaos', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class)->nullable();
-            $table->string('nome');
-            $table->string('tipo_pessoa', 1)->default('F');
-            $table->string('papel', 1)->default('C');
+            $table->foreignIdFor(Produto::class);
+            $table->string('operacao', 2);
+            $table->decimal('qtd', 10, 3);
             $table->integer('status')->default(1);
             $table->timestamps();
         });
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('clientes');
+        Schema::dropIfExists('estoque_movimentacaos');
     }
 };
