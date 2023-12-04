@@ -58,7 +58,6 @@
             </div>
         </div>
     </div>
-    <div class="text-right"> login</div>
 </body>
 
 </html>

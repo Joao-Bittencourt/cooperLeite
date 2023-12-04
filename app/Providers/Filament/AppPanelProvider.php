@@ -17,6 +17,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use App\Filament\App\Resources\ActivityResource;
 
 class AppPanelProvider extends PanelProvider
 {
@@ -26,6 +27,7 @@ class AppPanelProvider extends PanelProvider
             ->id('app')
             ->path('app')
             ->login()
+            ->registration()
             ->colors([
                 'primary' => Color::Green,
             ])
@@ -48,6 +50,9 @@ class AppPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+            ])
+            ->resources([
+                ActivityResource::class
             ]);
     }
 }
