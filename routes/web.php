@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +15,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::get('/', function (Request $request) {
+    Log::info('RequestLog', [
+        'ip' => $request->ip(),
+        'method' => $request->method(),
+        'url' => $request->fullUrl()
+    ]);
     return view('welcome');
 });
