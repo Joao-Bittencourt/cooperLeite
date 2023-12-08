@@ -3,15 +3,13 @@
 namespace App\Filament\App\Resources;
 
 use App\Filament\App\Resources\ProdutoResource\Pages;
-use App\Filament\App\Resources\ProdutoResource\RelationManagers;
 use App\Models\Produto;
+use App\Status;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ProdutoResource extends Resource
 {
@@ -27,9 +25,9 @@ class ProdutoResource extends Resource
                     ->required(),
                 Forms\Components\TextInput::make('descricao'),
                 Forms\Components\TextInput::make('unidade'),
-                Forms\Components\TextInput::make('status')
+                Forms\Components\Select::make('status')
+                    ->options((new Status())->getOptions())
                     ->required()
-                    ->numeric()
                     ->default(1),
             ]);
     }
@@ -45,7 +43,7 @@ class ProdutoResource extends Resource
                 Tables\Columns\TextColumn::make('unidade')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status')
-                    ->numeric()
+                    ->formatStateUsing(fn (string $state): string => (new Status())->getOption($state))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Dt Cadastro')

@@ -3,16 +3,14 @@
 namespace App\Filament\App\Resources;
 
 use App\Filament\App\Resources\EstoqueMovimentacaoResource\Pages;
-use App\Filament\App\Resources\EstoqueMovimentacaoResource\RelationManagers;
 use App\Models\EstoqueMovimentacao;
+use App\Status;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class EstoqueMovimentacaoResource extends Resource
 {
@@ -31,20 +29,22 @@ class EstoqueMovimentacaoResource extends Resource
                     ->required(),
                 Forms\Components\Select::make('operacao')
                     ->label('Operação')
-                    ->options($estoqueMovimentacao->operacaoOptions)
+                    ->options($estoqueMovimentacao->getOperacoes())
                     ->required(),
                 Forms\Components\TextInput::make('qtd')
                     ->required()
                     ->numeric(),
-                Forms\Components\TextInput::make('status')
+                Forms\Components\Select::make('status')
+                    ->options((new Status())->getOptions())
                     ->required()
-                    ->numeric()
                     ->default(1),
             ]);
     }
 
     public static function table(Table $table): Table
     {
+        $estoqueMovimentacao = new EstoqueMovimentacao();
+
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('produto.nome')
@@ -53,12 +53,13 @@ class EstoqueMovimentacaoResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('operacao')
                     ->label('Operação')
+                    ->formatStateUsing(fn (string $state): string => $estoqueMovimentacao->getOperacao($state))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('qtd')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
-                    ->numeric()
+                    ->formatStateUsing(fn (string $state): string => (new Status())->getOption($state))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -74,13 +75,12 @@ class EstoqueMovimentacaoResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-            ])
-            // ->bulkActions([
-            //     Tables\Actions\BulkActionGroup::make([
-            //         Tables\Actions\DeleteBulkAction::make(),
-            //     ]),
-            // ])
-        ;
+            ]);
+        // ->bulkActions([
+        //     Tables\Actions\BulkActionGroup::make([
+        //         Tables\Actions\DeleteBulkAction::make(),
+        //     ]),
+        // ])
     }
 
     public static function getRelations(): array

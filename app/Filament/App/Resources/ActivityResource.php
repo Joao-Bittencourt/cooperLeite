@@ -2,7 +2,6 @@
 
 namespace App\Filament\App\Resources;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Z3d0X\FilamentLogger\Resources\ActivityResource as ResourcesActivityResource;
 

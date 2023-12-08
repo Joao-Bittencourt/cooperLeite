@@ -3,7 +3,6 @@
 namespace App\Filament\App\Resources\ClienteResource\Pages;
 
 use App\Filament\App\Resources\ClienteResource;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateCliente extends CreateRecord

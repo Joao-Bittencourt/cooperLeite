@@ -18,9 +18,8 @@ class Produto extends Model
         'descricao',
         'unidade',
         'status',
-        'created_at'
+        'created_at',
     ];
-   
 
     public function estoque_movimentacaos(): HasMany
     {

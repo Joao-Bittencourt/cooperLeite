@@ -3,15 +3,13 @@
 namespace App\Filament\App\Resources;
 
 use App\Filament\App\Resources\ClienteResource\Pages;
-use App\Filament\App\Resources\ClienteResource\RelationManagers;
 use App\Models\Cliente;
+use App\Status;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ClienteResource extends Resource
 {
@@ -28,13 +26,13 @@ class ClienteResource extends Resource
                 Forms\Components\TextInput::make('nome')
                     ->required(),
                 Forms\Components\Select::make('tipo_pessoa')
-                    ->options($cliente->tipoPessoaOptions)
+                    ->options($cliente->getTipoPessoas())
                     ->required(),
                 Forms\Components\Select::make('papel')
-                    ->options($cliente->papelOptions)
+                    ->options($cliente->getPapeis())
                     ->required(),
                 Forms\Components\Select::make('status')
-                    ->options([1 => 'Ativo', 0 => 'Cancelado'])
+                    ->options((new Status())->getOptions())
                     ->required()
                     ->default(1),
             ]);
@@ -42,16 +40,21 @@ class ClienteResource extends Resource
 
     public static function table(Table $table): Table
     {
+
+        $cliente = new Cliente();
+
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('nome')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('tipo_pessoa')
+                    ->formatStateUsing(fn (string $state): string => $cliente->getTipoPessoa($state))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('papel')
+                    ->formatStateUsing(fn (string $state): string => $cliente->getPapel($state))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status')
-                    ->numeric()
+                    ->formatStateUsing(fn (string $state): string => (new Status())->getOption($state))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Dt Cadastro')

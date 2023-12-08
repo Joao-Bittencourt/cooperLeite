@@ -19,7 +19,8 @@ Route::get('/', function (Request $request) {
     Log::info('RequestLog', [
         'ip' => $request->ip(),
         'method' => $request->method(),
-        'url' => $request->fullUrl()
+        'url' => $request->fullUrl(),
     ]);
+
     return view('welcome');
 });
